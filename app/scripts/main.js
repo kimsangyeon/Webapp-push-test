@@ -67,7 +67,7 @@ function initialiseUI() {
   pushButton.addEventListener('click', function() {
     pushButton.disabled = true;
     if (isSubscribed) {
-      // TODO: Unsubscribe user
+      unsubscribeUser();
     } else {
       subscribeUser();
     }
@@ -129,6 +129,30 @@ function subscribeUser() {
   });
 }
 
+/**
+ * 사용자 구독 취소
+ */
+function unsubscribeUser() {
+  swRegistration.pushManager.getSubscription().then(function(subscription) {
+    if (subscription) {
+      // TODO: Tell application server to delete subscription
+      return subscription.unsubscribe();
+    }
+  }).catch(function(error) {
+    console.log('Error unsubscribing', error);
+  }).then(function() {
+    updateSubscriptionOnServer(null);
+
+    console.log('User is unsubscribed.');
+    isSubscribed = false;
+
+    updateBtn();
+  });
+}
+
+/**
+ * 서버 구독 정보 업데이트
+ */
 function updateSubscriptionOnServer(subscription) {
   // TODO: Send subscription to application server
 
